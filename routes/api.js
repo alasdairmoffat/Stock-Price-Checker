@@ -35,25 +35,40 @@ const stockSchema = new Schema({
 
 const Stock = mongoose.model('Stock', stockSchema);
 
+async function getStockPrice(stockName) {
+  const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockName}&apikey=${
+    process.env.ALPHA_VANTAGE_KEY
+  }`;
+
+  try {
+    const stockPrice = await axios.get(url);
+    return parseFloat(stockPrice.data['Global Quote']['05. price']);
+  } catch (err) {
+    return null;
+  }
+}
+
 async function queryStock(stockName, like, ip) {
   const stock = stockName.toUpperCase();
-  const url = `https://api.iextrading.com/1.0/stock/${stockName}/price`;
 
   const newStock = like ? { stock, $addToSet: { likeIps: ip } } : { stock };
+  try {
+    const [dbResponse, stockPrice] = await Promise.all([
+      Stock.findOneAndUpdate({ stock }, newStock, {
+        new: true,
+        upsert: true,
+      }),
+      getStockPrice(stockName),
+    ]);
 
-  const [dbResponse, stockPrice] = await Promise.all([
-    Stock.findOneAndUpdate({ stock }, newStock, {
-      new: true,
-      upsert: true,
-    }),
-    axios.get(url),
-  ]);
-
-  return {
-    stock: dbResponse.stock,
-    price: stockPrice.data,
-    likes: dbResponse.likeIps.length,
-  };
+    return {
+      stock: dbResponse.stock,
+      price: stockPrice,
+      likes: dbResponse.likeIps.length,
+    };
+  } catch (err) {
+    throw err;
+  }
 }
 
 module.exports = (app) => {
@@ -62,25 +77,33 @@ module.exports = (app) => {
     const { ip } = req;
 
     if (Array.isArray(stock)) {
-      const responses = await Promise.all([
-        queryStock(stock[0], like, ip),
-        queryStock(stock[1], like, ip),
-      ]);
+      try {
+        const responses = await Promise.all([
+          queryStock(stock[0], like, ip),
+          queryStock(stock[1], like, ip),
+        ]);
 
-      const stockData = responses.map((response, i) => {
-        const { stock, price } = response;
-        const rel_likes = response.likes - responses[(i + 1) % 2].likes;
+        const stockData = responses.map((response, i) => {
+          const { stock, price } = response;
+          const rel_likes = response.likes - responses[(i + 1) % 2].likes;
 
-        return { stock, price, rel_likes };
-      });
+          return { stock, price, rel_likes };
+        });
 
-      res.json({
-        stockData,
-      });
+        res.json({
+          stockData,
+        });
+      } catch (err) {
+        res.status(500).json('Request failed');
+      }
     } else {
-      const response = await queryStock(stock, like, ip);
+      try {
+        const response = await queryStock(stock, like, ip);
 
-      res.json(response);
+        res.json(response);
+      } catch (err) {
+        res.status(500).json('Request failed');
+      }
     }
   });
 };
