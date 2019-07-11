@@ -39,22 +39,13 @@ async function queryStock(stockName, like, ip) {
   const stock = stockName.toUpperCase();
   const url = `https://api.iextrading.com/1.0/stock/${stockName}/price`;
 
+  const newStock = like ? { stock, $addToSet: { likeIps: ip } } : { stock };
+
   const [dbResponse, stockPrice] = await Promise.all([
-    Stock.findOneAndUpdate(
-      { stock },
-      like
-        ? {
-          stock,
-          $addToSet: { likeIps: ip },
-        }
-        : {
-          stock,
-        },
-      {
-        new: true,
-        upsert: true,
-      },
-    ),
+    Stock.findOneAndUpdate({ stock }, newStock, {
+      new: true,
+      upsert: true,
+    }),
     axios.get(url),
   ]);
 
@@ -71,14 +62,14 @@ module.exports = (app) => {
     const { ip } = req;
 
     if (Array.isArray(stock)) {
-      const [response1, response2] = await Promise.all([
+      const responses = await Promise.all([
         queryStock(stock[0], like, ip),
         queryStock(stock[1], like, ip),
       ]);
 
-      const stockData = [response1, response2].map((response, i, array) => {
+      const stockData = responses.map((response, i) => {
         const { stock, price } = response;
-        const rel_likes = response.likes - array[(i + 1) % 2].likes;
+        const rel_likes = response.likes - responses[(i + 1) % 2].likes;
 
         return { stock, price, rel_likes };
       });
