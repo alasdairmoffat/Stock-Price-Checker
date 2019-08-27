@@ -52,7 +52,13 @@ suite('Functional Tests', () => {
           assert.property(res.body, 'likes', 'Response should contain the number of likes.');
           assert.equal(res.body.stock, 'GOOG', 'Response stock name should match.');
           assert.isNumber(res.body.price, 'Stock price should be a number.');
-          assert.equal(res.body.likes, numLikes1 + 1, 'Number of likes should be incremented.');
+          assert.oneOf(
+            res.body.likes,
+            [numLikes1 + 1, numLikes1],
+            'Number of likes should be incremented or the same.',
+          );
+
+          numLikes1 = res.body.likes;
           done();
         });
     });
@@ -69,7 +75,7 @@ suite('Functional Tests', () => {
           assert.property(res.body, 'likes', 'Response should contain the number of likes.');
           assert.equal(res.body.stock, 'GOOG', 'Response stock name should match.');
           assert.isNumber(res.body.price, 'Stock price should be a number.');
-          assert.equal(res.body.likes, numLikes1 + 1, 'Number of likes should not be incremented.');
+          assert.equal(res.body.likes, numLikes1, 'Number of likes should not be incremented.');
           done();
         });
     });
