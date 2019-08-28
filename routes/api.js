@@ -36,15 +36,13 @@ const stockSchema = new Schema({
 const Stock = mongoose.model('Stock', stockSchema);
 
 async function getStockPrice(stockName) {
-  const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockName}&apikey=${
-    process.env.ALPHA_VANTAGE_KEY
-  }`;
+  const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockName}&apikey=${process.env.ALPHA_VANTAGE_KEY}`;
 
   try {
     const stockPrice = await axios.get(url);
     return parseFloat(stockPrice.data['Global Quote']['05. price']);
   } catch (err) {
-    return null;
+    console.log(err.message, err.stack);
   }
 }
 

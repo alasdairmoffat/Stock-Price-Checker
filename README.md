@@ -54,12 +54,13 @@ Project built to fulfill the following User Stories:
 
 ## Technologies
 
-- Node.js version: 4.4
-- Express version: 4.14
-- Chai version: 3.5
-- Helmet version: 3.1
-- MongoDB version: 2.2
-- Mongoose version: 5.5
+- Node.js version: 10.15
+- Express version: 4.17
+- Chai version: 4.2
+- Mocha version: 6.2
+- Helmet version: 3.20
+- MongoDB version: 3.3
+- Mongoose version: 5.6
 
 ## Setup
 
