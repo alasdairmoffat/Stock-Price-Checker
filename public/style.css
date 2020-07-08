@@ -1,0 +1,23 @@
+.align-left {
+  text-align: left;
+}
+
+.w100 {
+  width: 100px;
+}
+
+.ml5 {
+  margin-left: 5%;
+}
+
+.mt5 {
+  margin-top: 5%;
+}
+
+.m50 {
+  margin: 50px;
+}
+
+.mt200 {
+  margin-top: 200px;
+}

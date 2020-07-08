@@ -18,8 +18,9 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
+        defaultSrc: ["'self'", 'code.jquery.com'],
         styleSrc: ["'self'"],
+        imgSrc: ['hyperdev.com', 'glitch.com'],
       },
     },
   }),
@@ -28,10 +29,8 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Index page (static HTML)
-app.route('/').get((req, res) => {
-  res.sendFile(`${process.cwd()}/views/index.html`);
-});
+// // Index page (static HTML)
+app.use(express.static('views'));
 
 // For FCC testing purposes
 fccTestingRoutes(app);
@@ -41,10 +40,7 @@ apiRoutes(app);
 
 // 404 Not Found Middleware
 app.use((req, res, next) => {
-  res
-    .status(404)
-    .type('text')
-    .send('Not Found');
+  res.status(404).type('text').send('Not Found');
 });
 
 // Start our server and tests!
