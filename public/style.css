@@ -1,23 +1,122 @@
-.align-left {
-  text-align: left;
+:root {
+  --primary-colour: #4646ff;
+  --primary-colour-l: #7b7bff;
+  --secondary-colour: #99d6ff;
+  --secondary-colour-l: #daf0ff;
 }
 
-.w100 {
-  width: 100px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.ml5 {
-  margin-left: 5%;
+body {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(315deg, var(--primary-colour), var(--secondary-colour));
 }
 
-.mt5 {
-  margin-top: 5%;
+.container {
+  background: linear-gradient(315deg, var(--secondary-colour), var(--secondary-colour-l));
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.2);
 }
 
-.m50 {
-  margin: 50px;
+h1 {
+  margin-bottom: 2rem;
 }
 
-.mt200 {
-  margin-top: 200px;
+form {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  display: flex;
+  flex-direction: column;
+  margin: 0.25rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+form input {
+  border: none;
+  border-radius: 7px;
+  padding: 0.5rem 1rem;
+  box-shadow: 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.like-toggle {
+  align-self: center;
+  margin: 1rem;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 8ch;
+  align-items: center;
+}
+
+.like-toggle i {
+  color: var(--primary-colour);
+}
+
+.like-toggle,
+.like-toggle input {
+  cursor: pointer;
+}
+
+form button {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: linear-gradient(315deg, var(--primary-colour), var(--primary-colour-l));
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 7px;
+  box-shadow: 2px 2px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+#jsonResult .stock-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1.5rem;
+  place-items: center;
+}
+
+#jsonResult .stock-flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stock-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(315deg, var(--primary-colour), var(--primary-colour-l));
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
+.stock-data .stock-name {
+  margin-bottom: 0.5rem;
+}
+
+.stock-data .price {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.stock-data .likes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 8ch;
 }

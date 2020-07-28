@@ -18,9 +18,9 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'", 'code.jquery.com'],
-        styleSrc: ["'self'"],
-        imgSrc: ['hyperdev.com', 'glitch.com'],
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", 'cdnjs.cloudflare.com'],
+        fontSrc: ['cdnjs.cloudflare.com'],
       },
     },
   }),
