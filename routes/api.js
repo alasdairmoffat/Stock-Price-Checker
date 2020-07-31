@@ -9,6 +9,7 @@
 const mongoose = require('mongoose');
 const axios = require('axios');
 const dotenv = require('dotenv');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));
 
 const { Schema } = mongoose;
 
@@ -49,8 +50,11 @@ async function getStockPrice(stockName) {
 
 async function queryStock(stockName, like, ip) {
   const stock = stockName.toUpperCase();
+  const hashedIp = await bcrypt.hash(ip, 10);
 
-  const newStock = like ? { stock, $addToSet: { likeIps: ip } } : { stock };
+  const newStock = like
+    ? { stock, $addToSet: { likeIps: hashedIp } }
+    : { stock };
   try {
     const [dbResponse, stockPrice] = await Promise.all([
       Stock.findOneAndUpdate({ stock }, newStock, {
