@@ -118,19 +118,9 @@ suite('Functional Tests', () => {
         .get('/api/stock-prices')
         .query({ stock, like: true })
         .end((err, res) => {
-          assert.equal(res.status, 200);
-          assert.property(res.body, 'stockData');
-          assert.isArray(res.body.stockData, 'Response stockData should be an array.');
-          assert.equal(res.body.stockData.length, 2, 'Response stockData should be length 2.');
-
-          res.body.stockData.forEach((data, i) => {
-            assert.property(data, 'stock', 'Response should contain the stock ticker.');
-            // We don't verify that stock price is a number due to api time limits
-            // assert.property(data, 'price', 'Response should contain the price.');
-            assert.property(data, 'rel_likes', 'Response should contain the number of likes.');
-            assert.equal(data.stock, stock[i], 'Response stock name should match.');
-            assert.equal(data.rel_likes, numLikes2[i], 'Number of rel_likes should be unchanged.');
-          });
+          // request will exceed API limits
+          assert.equal(res.status, 500);
+          assert.equal(res.body, 'API limit exceeded. Please try again later.');
           done();
         });
     });

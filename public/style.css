@@ -3,6 +3,8 @@
   --primary-colour-l: #7b7bff;
   --secondary-colour: #99d6ff;
   --secondary-colour-l: #daf0ff;
+  --error-colour: #b81904;
+  --error-colour-l: #ff705d;
 }
 
 * {
@@ -52,7 +54,7 @@ form input {
 }
 
 .like-toggle {
-  align-self: center;
+  align-self: flex-start;
   margin: 1rem;
   flex-direction: row;
   justify-content: space-between;
@@ -62,6 +64,7 @@ form input {
 
 .like-toggle i {
   color: var(--primary-colour);
+  margin-left: 1rem;
 }
 
 .like-toggle,
@@ -119,4 +122,14 @@ form button {
   justify-content: space-between;
   align-items: center;
   width: 8ch;
+}
+
+.error-message {
+  background: linear-gradient(315deg, var(--error-colour), var(--error-colour-l));
+  color: #fff;
+  font-size: 1.25rem;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.2);
+  width: 100%;
 }

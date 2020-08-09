@@ -26,6 +26,7 @@ function formatData(data) {
 }
 
 function displayData(data) {
+  if (typeof data === 'string');
   if (Array.isArray(data)) {
     jsonResult.innerHTML = `<div class="stock-grid">
                               ${formatData(data[0])}
@@ -36,6 +37,10 @@ function displayData(data) {
                               ${formatData(data)}
                             </div>`;
   }
+}
+
+function displayError(data) {
+  jsonResult.innerHTML = `<div class="error-message stock-flex">${data}</div>`;
 }
 
 stockPriceForm.addEventListener('submit', async (e) => {
@@ -52,18 +57,12 @@ stockPriceForm.addEventListener('submit', async (e) => {
   }
 
   const res = await fetch(`/api/stock-prices?${params.join('&')}`);
-
   const data = await res.json();
 
-  displayData(stock2 ? data.stockData : data);
+  if (res.status === 200) {
+    displayData(data.stockData ? data.stockData : data);
+  } else {
+    displayError(data);
+  }
   stockPriceForm.reset();
 });
-
-// Test Data
-const testData = [
-  { stock: 'GOOG', price: 1520.58, rel_likes: 3 },
-  { stock: 'MSFT', price: 208.35, rel_likes: -3 },
-];
-const testData2 = { stock: 'GOOG', price: 1520.58, rel_likes: 3 };
-
-// displayData(testData);

@@ -5,10 +5,8 @@
  *
  *
  */
-
 const mongoose = require('mongoose');
 const axios = require('axios');
-const dotenv = require('dotenv');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -20,7 +18,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(console.log('MongoDB connected'))
-  .catch((err) => console.log(err));
+  .catch(err => console.log(err));
 
 const { Schema } = mongoose;
 
@@ -37,24 +35,30 @@ const stockSchema = new Schema({
 
 const Stock = mongoose.model('Stock', stockSchema);
 
+const apiLimitMessage = 'API limit exceeded. Please try again later.';
+
 async function getStockPrice(stockName) {
   const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockName}&apikey=${process.env.ALPHA_VANTAGE_KEY}`;
 
   try {
     const stockPrice = await axios.get(url);
-    return parseFloat(stockPrice.data['Global Quote']['05. price']);
+    if (stockPrice.data['Global Quote']) {
+      return parseFloat(stockPrice.data['Global Quote']['05. price']);
+    }
+    if (stockPrice.data.Note) {
+      return stockPrice.data.Note;
+    }
+    return undefined;
   } catch (err) {
     console.log(err.message, err.stack);
+    return undefined;
   }
 }
 
 async function queryStock(stockName, like, ip) {
   const stock = stockName.toUpperCase();
-  const hashedIp = await bcrypt.hash(ip, 10);
 
-  const newStock = like
-    ? { stock, $addToSet: { likeIps: hashedIp } }
-    : { stock };
+  const newStock = like ? { stock, $addToSet: { likeIps: ip } } : { stock };
   try {
     const [dbResponse, stockPrice] = await Promise.all([
       Stock.findOneAndUpdate({ stock }, newStock, {
@@ -63,6 +67,13 @@ async function queryStock(stockName, like, ip) {
       }),
       getStockPrice(stockName),
     ]);
+
+    if (
+      stockPrice
+      === 'Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.'
+    ) {
+      throw new Error(apiLimitMessage);
+    }
 
     return {
       stock: dbResponse.stock,
@@ -79,8 +90,8 @@ module.exports = (app) => {
     const { stock, like } = req.query;
     const { ip } = req;
 
-    if (Array.isArray(stock)) {
-      try {
+    try {
+      if (Array.isArray(stock)) {
         const responses = await Promise.all([
           queryStock(stock[0], like, ip),
           queryStock(stock[1], like, ip),
@@ -96,15 +107,15 @@ module.exports = (app) => {
         res.json({
           stockData,
         });
-      } catch (err) {
-        res.status(500).json('Request failed');
-      }
-    } else {
-      try {
+      } else {
         const response = await queryStock(stock, like, ip);
 
         res.json(response);
-      } catch (err) {
+      }
+    } catch (err) {
+      if (err.message === apiLimitMessage) {
+        res.status(500).json(apiLimitMessage);
+      } else {
         res.status(500).json('Request failed');
       }
     }
