@@ -58,7 +58,7 @@ async function getStockPrice(stockName) {
 async function queryStock(stockName, like, ip) {
   const stock = stockName.toUpperCase();
 
-  const newStock = like ? { stock, $addToSet: { likeIps: ip } } : { stock };
+  const newStock = like === 'true' ? { stock, $addToSet: { likeIps: ip } } : { stock };
   try {
     const [dbResponse, stockPrice] = await Promise.all([
       Stock.findOneAndUpdate({ stock }, newStock, {
@@ -88,7 +88,9 @@ async function queryStock(stockName, like, ip) {
 module.exports = (app) => {
   app.route('/api/stock-prices').get(async (req, res) => {
     const { stock, like } = req.query;
-    const { ip } = req;
+    const ip = req.headers['x-forwarded-for']
+      ? req.headers['x-forwarded-for'].split(',')[0]
+      : req.connection.remoteAddress;
 
     try {
       if (Array.isArray(stock)) {
