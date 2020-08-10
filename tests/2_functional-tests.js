@@ -32,12 +32,31 @@ suite('Functional Tests', () => {
         .end((err, res) => {
           // complete this one too
           assert.equal(res.status, 200);
-          assert.property(res.body, 'stock', 'Response should contain the stock ticker.');
-          assert.property(res.body, 'price', 'Response should contain the price.');
-          assert.property(res.body, 'likes', 'Response should contain the number of likes.');
-          assert.equal(res.body.stock, 'GOOG', 'Response stock name should match.');
+          assert.property(
+            res.body,
+            'stock',
+            'Response should contain the stock ticker.',
+          );
+          assert.property(
+            res.body,
+            'price',
+            'Response should contain the price.',
+          );
+          assert.property(
+            res.body,
+            'likes',
+            'Response should contain the number of likes.',
+          );
+          assert.equal(
+            res.body.stock,
+            'GOOG',
+            'Response stock name should match.',
+          );
           assert.isNumber(res.body.price, 'Stock price should be a number.');
-          assert.isNumber(res.body.likes, 'Number of likes should be a number.');
+          assert.isNumber(
+            res.body.likes,
+            'Number of likes should be a number.',
+          );
 
           numLikes1 = res.body.likes;
           done();
@@ -51,10 +70,26 @@ suite('Functional Tests', () => {
         .query({ stock: 'goog', like: true })
         .end((err, res) => {
           assert.equal(res.status, 200);
-          assert.property(res.body, 'stock', 'Response should contain the stock ticker.');
-          assert.property(res.body, 'price', 'Response should contain the price.');
-          assert.property(res.body, 'likes', 'Response should contain the number of likes.');
-          assert.equal(res.body.stock, 'GOOG', 'Response stock name should match.');
+          assert.property(
+            res.body,
+            'stock',
+            'Response should contain the stock ticker.',
+          );
+          assert.property(
+            res.body,
+            'price',
+            'Response should contain the price.',
+          );
+          assert.property(
+            res.body,
+            'likes',
+            'Response should contain the number of likes.',
+          );
+          assert.equal(
+            res.body.stock,
+            'GOOG',
+            'Response stock name should match.',
+          );
           assert.isNumber(res.body.price, 'Stock price should be a number.');
           assert.oneOf(
             res.body.likes,
@@ -74,12 +109,32 @@ suite('Functional Tests', () => {
         .query({ stock: 'goog', like: true })
         .end((err, res) => {
           assert.equal(res.status, 200);
-          assert.property(res.body, 'stock', 'Response should contain the stock ticker.');
-          assert.property(res.body, 'price', 'Response should contain the price.');
-          assert.property(res.body, 'likes', 'Response should contain the number of likes.');
-          assert.equal(res.body.stock, 'GOOG', 'Response stock name should match.');
+          assert.property(
+            res.body,
+            'stock',
+            'Response should contain the stock ticker.',
+          );
+          assert.property(
+            res.body,
+            'price',
+            'Response should contain the price.',
+          );
+          assert.property(
+            res.body,
+            'likes',
+            'Response should contain the number of likes.',
+          );
+          assert.equal(
+            res.body.stock,
+            'GOOG',
+            'Response stock name should match.',
+          );
           assert.isNumber(res.body.price, 'Stock price should be a number.');
-          assert.equal(res.body.likes, numLikes1, 'Number of likes should not be incremented.');
+          assert.equal(
+            res.body.likes,
+            numLikes1,
+            'Number of likes should not be incremented.',
+          );
           done();
         });
     });
@@ -95,16 +150,42 @@ suite('Functional Tests', () => {
         .end((err, res) => {
           assert.equal(res.status, 200);
           assert.property(res.body, 'stockData');
-          assert.isArray(res.body.stockData, 'Response stockData should be an array.');
-          assert.equal(res.body.stockData.length, 2, 'Response stockData should be length 2.');
+          assert.isArray(
+            res.body.stockData,
+            'Response stockData should be an array.',
+          );
+          assert.equal(
+            res.body.stockData.length,
+            2,
+            'Response stockData should be length 2.',
+          );
 
           res.body.stockData.forEach((data, i) => {
-            assert.property(data, 'stock', 'Response should contain the stock ticker.');
-            assert.property(data, 'price', 'Response should contain the price.');
-            assert.property(data, 'rel_likes', 'Response should contain the number of likes.');
-            assert.equal(data.stock, stock[i], 'Response stock name should match.');
+            assert.property(
+              data,
+              'stock',
+              'Response should contain the stock ticker.',
+            );
+            assert.property(
+              data,
+              'price',
+              'Response should contain the price.',
+            );
+            assert.property(
+              data,
+              'rel_likes',
+              'Response should contain the number of likes.',
+            );
+            assert.equal(
+              data.stock,
+              stock[i],
+              'Response stock name should match.',
+            );
             assert.isNumber(data.price, 'Stock price should be a number.');
-            assert.isNumber(data.rel_likes, 'Number of rel_likes should be a number.');
+            assert.isNumber(
+              data.rel_likes,
+              'Number of rel_likes should be a number.',
+            );
 
             numLikes2[i] = data.rel_likes;
           });
@@ -118,9 +199,41 @@ suite('Functional Tests', () => {
         .get('/api/stock-prices')
         .query({ stock, like: true })
         .end((err, res) => {
-          // request will exceed API limits
-          assert.equal(res.status, 500);
-          assert.equal(res.body, 'API limit exceeded. Please try again later.');
+          assert.equal(res.status, 200);
+          assert.property(res.body, 'stockData');
+          assert.isArray(
+            res.body.stockData,
+            'Response stockData should be an array.',
+          );
+          assert.equal(
+            res.body.stockData.length,
+            2,
+            'Response stockData should be length 2.',
+          );
+
+          res.body.stockData.forEach((data, i) => {
+            assert.property(
+              data,
+              'stock',
+              'Response should contain the stock ticker.',
+            );
+            assert.property(data, 'price', 'Response should contain the price.');
+            assert.property(
+              data,
+              'rel_likes',
+              'Response should contain the number of likes.',
+            );
+            assert.equal(
+              data.stock,
+              stock[i],
+              'Response stock name should match.',
+            );
+            assert.equal(
+              data.rel_likes,
+              numLikes2[i],
+              'Number of rel_likes should be unchanged.',
+            );
+          });
           done();
         });
     });
