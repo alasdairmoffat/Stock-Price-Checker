@@ -6,6 +6,8 @@
 [![Build Status](https://travis-ci.com/alasdairmoffat/Stock-Price-Checker.svg?branch=master)](https://travis-ci.com/alasdairmoffat/Stock-Price-Checker)
 [![codecov](https://codecov.io/gh/alasdairmoffat/Stock-Price-Checker/branch/master/graph/badge.svg)](https://codecov.io/gh/alasdairmoffat/Stock-Price-Checker)
 
+![Demo Image](../assets/demo-image.png?raw=true)
+
 ## Table of Contents
 
 - [Preview](#preview)
